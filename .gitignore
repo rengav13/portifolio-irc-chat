@@ -3,3 +3,7 @@
 \.idea
 chat-irc.iml
 package-lock.json
+\web-app\irc-client\node_modules
+\amqp-irc\node_modules
+rabbitmq-server-3.7.9.exe
+otp_win64_21.2.exe
