@@ -1,10 +1,10 @@
-let winston = require('winston')
-let formatter = require('winston-console-formatter')
+const winston = require('winston');
+const formatter = require('winston-console-formatter');
 
-let logger = new winston.Logger({
+const LOGGER = new winston.Logger({
   level: 'silly',
 });
 
-logger.add(winston.transports.Console, formatter.config())
+LOGGER.add(winston.transports.Console, formatter.config());
 
-module.exports = logger
+module.exports = LOGGER;

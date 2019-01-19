@@ -1,7 +1,7 @@
 {
-  "name": "p3-g5",
+  "name": "Chat-IRC",
   "version": "1.0.0",
-  "description": "Projeto 3 - Disciplina de Sistemas Distribuidos 1",
+  "description": "An IRC client developed in react to study multi-protocol integration and scalable applications",
   "scripts": {
     "start": "node app.js",
     "lint": "./node_modules/.bin/eslint ./**/*.js",
@@ -19,7 +19,7 @@
   "homepage": "https://gitlab.com/sd1-ec-2017-2/p2-g5#README",
   "devDependencies": {
     "nodemon": "1.12.1",
-    "eslint": "4.7.2",
+    "eslint": "5.6.0",
     "eslint-config-standard": "10.2.1",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-node": "5.1.1",

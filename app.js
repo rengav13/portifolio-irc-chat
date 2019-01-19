@@ -1,31 +1,39 @@
-let LOGGER = require('./common/logger')
-let express = require('express')
-let app = express()
-let bodyParser = require('body-parser')
-let cookieParser = require('cookie-parser')
-let webSocketCookieParser = require('socket.io-cookie')
-let http = require('http').Server(app)
-let webSocket = require('socket.io')(http)
+const LOGGER = require('./common/logger');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const webSocketCookieParser = require('socket.io-cookie');
+const http = require('http');
+const webSocket = require('socket.io');
 
-let sockets = {}
+const login = require('./web-amqp/middleware/login');
+const doLogin = require('./web-amqp/middleware/do-login');
+const auth = require('./web-amqp/middleware/auth');
+const registerServices = require('./web-amqp/registra-end-points');
+const wsConnection = require('./web-amqp/web-socket-conn');
+const amqpListener = require('./web-amqp/on-new-notificacao');
 
-let APP_PORT = '3000'
+const app = express();
+const httpServer = http.Server(app);
+const wsServer = webSocket(http);
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(cookieParser())
-app.get('/login', require('./web-amqp/middleware/login')())
-app.post('/login', require('./web-amqp/middleware/do-login')())
-app.use(require('./web-amqp/middleware/auth')())
+const APP_PORT = '3000';
+const sockets = {};
 
-require('./web-amqp/registra-end-points')(app, sockets)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.get('/login', login());
+app.post('/login', doLogin());
+app.use(auth());
 
-app.use(express.static('web-app'))
+registerServices(app, sockets);
 
-webSocket.use(webSocketCookieParser)
+app.use(express.static('web-app'));
 
-webSocket.on('connection', require('./web-amqp/web-socket-conn')(sockets))
+wsServer.use(webSocketCookieParser);
+wsServer.on('connection', wsConnection(sockets));
 
-http.listen(APP_PORT, () => LOGGER.log('info', 'Servindo na porta ' + APP_PORT))
+httpServer.listen(APP_PORT, () => LOGGER.log('info', 'Servindo na porta ' + APP_PORT));
 
-require('./web-amqp/on-new-notificacao')(sockets)
+amqpListener(sockets);
